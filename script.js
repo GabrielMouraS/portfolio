@@ -203,4 +203,9 @@ modal.addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
+fetch('https://api.countapi.xyz/hit/gabrielmouras-portfolio/visitas')
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('contador').innerText = data.value;
+  });
 
