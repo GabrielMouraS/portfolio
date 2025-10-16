@@ -203,8 +203,41 @@ modal.addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
-fetch('https://api.counterapi.dev/v1/gabrielmouras/portfolio/up') // Nova URL da API
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById('contador').innerText = data.count; // Usamos 'data.count'
-  });
+async function gerenciarContadorDeVisitas() {
+    const contadorElemento = document.getElementById('contador');
+    const ultimaVisita = localStorage.getItem('ultimaVisita');
+    const apiUrl = 'https://api.counterapi.dev/v1/gabrielmouras/portfolio';
+
+    const hojeString = new Date().toISOString().slice(0, 10); 
+    const ultimaVisitaString = ultimaVisita ? new Date(ultimaVisita).toISOString().slice(0, 10) : null;
+
+    try {
+        let response;
+        
+        if (hojeString !== ultimaVisitaString) {
+            
+            response = await fetch(`${apiUrl}/up`, { method: 'POST' });
+            
+            localStorage.setItem('ultimaVisita', new Date().toISOString());
+        } else {
+            
+            response = await fetch(apiUrl);
+        }
+
+        if (!response.ok) {
+            throw new Error('Falha ao comunicar com a API do contador');
+        }
+
+        const data = await response.json();
+        contadorElemento.innerText = data.count;
+
+    } catch (error) {
+        console.error('Erro no contador:', error);
+        contadorElemento.innerText = 'N/A';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadRepositories(); 
+    gerenciarContadorDeVisitas();
+});
