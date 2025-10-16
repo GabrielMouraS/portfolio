@@ -203,41 +203,40 @@ modal.addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
+// ---------- CONTADOR DE VISITAS ----------
 async function gerenciarContadorDeVisitas() {
-    const contadorElemento = document.getElementById('contador');
-    const ultimaVisita = localStorage.getItem('ultimaVisita');
-    const apiUrl = 'https://api.counterapi.dev/v1/gabrielmouras/portfolio';
+    const contador = document.getElementById('contador');
+    if (!contador) return;
 
-    const hojeString = new Date().toISOString().slice(0, 10); 
-    const ultimaVisitaString = ultimaVisita ? new Date(ultimaVisita).toISOString().slice(0, 10) : null;
+    const apiUrl = 'https://api.counterapi.dev/v1/gabrielmouras/portfolio2/up';
+    const hoje = new Date().toDateString();
+    const ultimoDia = localStorage.getItem('ultimoDia');
+
+    // reseta storage a cada novo dia
+    if (ultimoDia !== hoje) {
+        localStorage.clear();
+        localStorage.setItem('ultimoDia', hoje);
+    }
+
+    // evita contagem dupla no mesmo dia
+    if (localStorage.getItem('contadoHoje')) {
+        contador.textContent = localStorage.getItem('ultimoValor') || '—';
+        return;
+    }
 
     try {
-        let response;
-        
-        if (hojeString !== ultimaVisitaString) {
-            
-            response = await fetch(`${apiUrl}/up`, { method: 'POST' });
-            
-            localStorage.setItem('ultimaVisita', new Date().toISOString());
-        } else {
-            
-            response = await fetch(apiUrl);
-        }
-
-        if (!response.ok) {
-            throw new Error('Falha ao comunicar com a API do contador');
-        }
-
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`Erro HTTP ${response.status}`);
         const data = await response.json();
-        contadorElemento.innerText = data.count;
-
+        contador.textContent = data.count;
+        localStorage.setItem('contadoHoje', 'true');
+        localStorage.setItem('ultimoValor', data.count);
     } catch (error) {
-        console.error('Erro no contador:', error);
-        contadorElemento.innerText = 'N/A';
+        console.error('Erro ao buscar contador:', error);
+        contador.textContent = 'Falhou';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadRepositories(); 
     gerenciarContadorDeVisitas();
 });
