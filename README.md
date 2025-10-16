@@ -4,7 +4,7 @@
 
 Bem-vindo ao repositório do meu portfólio!
 
-🔗 **Você pode ver a versão ao vivo aqui:** ()
+🔗 **Você pode ver a versão ao vivo aqui:** (https://gabrielmouras.github.io/portfolio/)
 
 ---
 
