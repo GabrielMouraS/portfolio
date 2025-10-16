@@ -203,9 +203,8 @@ modal.addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
-fetch('https://api.countapi.xyz/hit/gabrielmouras-portfolio/visitas')
+fetch('https://api.counterapi.dev/v1/gabrielmouras/portfolio/up') // Nova URL da API
   .then(response => response.json())
   .then(data => {
-    document.getElementById('contador').innerText = data.value;
+    document.getElementById('contador').innerText = data.count; // Usamos 'data.count'
   });
-
